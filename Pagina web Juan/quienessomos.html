@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GYPSYTOCRAZY - Quiénes Somos</title>
+    <link rel="icon" type="image/x-icon" href="Logo.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #000;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        header {
+            position: fixed;
+            top: -1vw;
+            left: 0;
+            width: 100%;
+            padding: 1.5vw 2vw;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: transparent;
+            transition: all 0.3s ease;
+        }
+
+        header.scrolled {
+            top: 0;
+            padding: 0.8vw 2vw;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            width: 120px;
+            height: auto;
+            transition: all 0.3s ease;
+            border-radius: 10px;
+            position: relative;
+            z-index: 9999;
+        }
+
+        header.scrolled .logo {
+            width: 80px;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        .menu {
+            display: flex;
+            gap: 2vw;
+            background: rgba(255, 105, 180, 0.15);
+            padding: 0.8vw 1.5vw;
+            border-radius: 30px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 105, 180, 0.3);
+        }
+
+        .menu a {
+            font-family: 'Montserrat', sans-serif;
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+            padding: 0.5vw 0;
+            transition: color 0.3s ease;
+        }
+
+        .menu a:hover {
+            color: #ff69b4;
+        }
+
+        .menu a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: #ff69b4;
+            transition: width 0.3s ease;
+        }
+
+        .menu a:hover::after {
+            width: 100%;
+        }
+
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 30px;
+            height: 21px;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        .menu-toggle span {
+            display: block;
+            height: 3px;
+            width: 100%;
+            background-color: #fff;
+            transition: all 0.3s ease;
+        }
+
+        .menu-toggle.active span:nth-child(1) {
+            transform: translateY(9px) rotate(45deg);
+        }
+
+        .menu-toggle.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .menu-toggle.active span:nth-child(3) {
+            transform: translateY(-9px) rotate(-45deg);
+        }
+
+        @media (max-width: 768px) {
+            header {
+                top: 0;
+                padding: 1.5rem;
+            }
+
+            header.scrolled {
+                padding: 0.8rem 1.5rem;
+            }
+
+            .logo {
+                width: 100px;
+                margin-top: 0;
+            }
+
+            header.scrolled .logo {
+                width: 70px;
+            }
+
+            .menu-toggle {
+                display: flex;
+            }
+
+            .menu {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 70%;
+                height: 100vh;
+                background: rgba(0, 0, 0, 0.95);
+                backdrop-filter: blur(10px);
+                flex-direction: column;
+                justify-content: flex-start;
+                align-items: flex-start;
+                gap: 2rem;
+                padding: 6rem 2rem 2rem 2rem;
+                transition: right 0.3s ease;
+                border-radius: 0;
+            }
+
+            .menu.active {
+                right: 0;
+            }
+
+            .menu a {
+                font-size: 1.2rem;
+                padding: 0.5rem 0;
+                width: 100%;
+                text-align: left;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header {
+                padding: 1rem;
+            }
+
+            header.scrolled {
+                padding: 0.6rem 1rem;
+            }
+
+            .logo {
+                width: 80px;
+            }
+
+            header.scrolled .logo {
+                width: 60px;
+            }
+
+            .menu {
+                width: 85%;
+                padding: 5rem 1.5rem 2rem 1.5rem;
+            }
+        }
+
+        .main-content {
+            margin-top: 100px;
+            padding: 20px;
+            min-height: calc(100vh - 100px);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            position: relative;
+            z-index: 2;
+        }
+
+        .main-content.loaded {
+            opacity: 1;
+        }
+
+        .about-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: rgba(255, 105, 180, 0.15);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 105, 180, 0.3);
+            position: relative;
+            z-index: 2;
+        }
+
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .about-text {
+            text-align: center;
+        }
+
+        .about-text h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            color: #fff;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .about-text p {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+            color: #fff;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .about-text p:last-child {
+            margin-bottom: 0;
+        }
+
+        .about-text p br {
+            margin-bottom: 0.5rem;
+            display: block;
+            content: "";
+        }
+
+        .about-text p:has(br) {
+            line-height: 2;
+        }
+
+        .about-text p:has(br) {
+            line-height: 2;
+        }
+
+        .about-image img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Estilos del loader */
+        #page-loader {
+            position: fixed;
+            z-index: 99999;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.7s cubic-bezier(.77,0,.18,1), visibility 0.7s cubic-bezier(.77,0,.18,1);
+            opacity: 1;
+            visibility: visible;
+            pointer-events: all;
+            overflow: hidden;
+            background: #000;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        #page-loader.hide {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .loader-bg {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            width: 100vw; height: 100vh;
+            background: url('Foto1.jpg') center center/cover no-repeat;
+            filter: blur(18px) brightness(0.3);
+            z-index: 1;
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+
+        .loader-bg.active {
+            opacity: 1;
+        }
+
+        .loader-text {
+            position: relative;
+            z-index: 2;
+            font-family: 'Playfair Display', serif;
+            font-size: 2.7rem;
+            color: #ff69b4;
+            letter-spacing: 0.2em;
+            white-space: pre;
+            display: inline-block;
+            opacity: 1;
+            font-weight: 700;
+            text-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
+            max-width: 100%;
+            padding: 0 20px;
+            text-align: center;
+        }
+
+        .loader-text span {
+            opacity: 0;
+            display: inline-block;
+            transform: translateY(20px);
+            transition: opacity 0.2s, transform 0.3s;
+        }
+
+        .loader-text span.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            .loader-text {
+                font-size: 2rem;
+                letter-spacing: 0.15em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .loader-text {
+                font-size: 1.5rem;
+                letter-spacing: 0.1em;
+            }
+        }
+
+        /* Estilos generales */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #000;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        .background-slider {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: #1a1a1a;
+        }
+
+        .background-slider img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            transition: all 3s cubic-bezier(0.4, 0, 0.2, 1);
+            filter: blur(20px) brightness(0.5);
+        }
+
+        .background-slider img.active {
+            opacity: 1;
+            filter: blur(20px) brightness(0.5);
+        }
+
+        .background-slider img.exit {
+            opacity: 0;
+            filter: blur(40px) brightness(0.3);
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 0;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loader -->
+    <div id="page-loader">
+        <div class="loader-bg"></div>
+        <span class="loader-text"></span>
+    </div>
+
+    <header>
+        <a href="index.html">
+            <img src="Logo.jpg" alt="GypsyToCrazy" class="logo">
+        </a>
+        <div class="menu-toggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <nav class="menu">
+            <a href="quienessomos.html" class="nav-link">Quiénes Somos</a>
+            <a href="colecciones.html" class="nav-link">Colecciones</a>
+            <a href="perfumes.html" class="nav-link">Perfumes</a>
+            <a href="lunaresacompas.html" class="nav-link">Lunares a Compás</a>
+            <a href="contacto.html" class="nav-link">Contacto</a>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <div class="about-container">
+            <div class="about-content">
+                <div class="about-text">
+                    <h1>Quiénes Somos</h1>
+                    <p>GYPSYTOCRAZY no es simplemente una firma de costura flamenca.</p>
+                    <p>Nacida del deseo de vestir no cuerpos, sino coronar presencias, la marca encarna un lujo que no responde a dictados, sino a visiones.</p>
+                    <p>Creamos piezas que no obedecen temporadas, sino a impulsos internos.</p>
+                    <p>Nuestras colecciones son mapas de identidad en constante movimiento: mezclan raíces, épocas, técnicas olvidadas y detalles reveladores. En cada costura hay una decisión estética; en cada diseño, un símbolo.</p>
+                    <p>Cada prenda es una ceremonia.<br>
+                    Cada tela, un manifiesto.<br>
+                    Cada silueta, un acto de soberanía femenina.</p>
+                    <p>Trabajamos con artesanía, materiales nobles y procesos que priorizan el alma por encima de todo. El tiempo es parte de nuestro proceso. El silencio también. Apostamos por una alta costura radicalmente flamenca y contemporánea: sin patria, pero con linaje. Sin normas, pero con ética.</p>
+                    <p>GYPSYTOCRACY viste a mujeres que no buscan pertenecer, sino expandirse.</p>
+                    <p>A mujeres que se visten para ser recordadas, no reconocidas. Que dejan una estela, no una etiqueta.</p>
+                    <p>A aquellas cuyo estilo responde a un gusto atemporal, fundando un estilo, creando una estirpe.</p>
+                    <p>Bienvenidas a la estética de la GITANOCRACIA.<br>
+                    Bienvenidas a GYPSYTOCRAZY.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div class="background-slider">
+        <img src="Foto1.jpg" class="active" alt="Background 1">
+        <img src="Foto2.jpg" alt="Background 2">
+        <img src="Foto3.jpg" alt="Background 3">
+        <img src="Foto4.jpg" alt="Background 4">
+        <img src="Foto5.jpg" alt="Background 5">
+        <img src="Foto6.jpg" alt="Background 6">
+        <img src="Foto7.jpg" alt="Background 7">
+        <img src="Foto8.jpg" alt="Background 8">
+        <img src="Foto9.jpg" alt="Background 9">
+        <img src="Foto10.jpg" alt="Background 10">
+        <img src="Foto11.jpg" alt="Background 11">
+    </div>
+    <div class="overlay"></div>
+
+    <script>
+        // Prevenir clic derecho en toda la página
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            return false;
+        });
+
+        // Variables del loader
+        const loaderText = "GYPSYTOCRAZY";
+        let isAnimating = false;
+
+        // Función para animar las letras
+        function animateLetters() {
+            const loaderSpan = document.querySelector('.loader-text');
+            if (!loaderSpan || isAnimating) return;
+            
+            isAnimating = true;
+            loaderSpan.innerHTML = "";
+
+            for (let i = 0; i < loaderText.length; i++) {
+                const span = document.createElement('span');
+                span.textContent = loaderText[i];
+                loaderSpan.appendChild(span);
+            }
+
+            const spans = loaderSpan.querySelectorAll('span');
+            spans.forEach((span, idx) => {
+                setTimeout(() => {
+                    span.classList.add('visible');
+                }, idx * 100);
+            });
+
+            setTimeout(() => {
+                isAnimating = false;
+            }, loaderText.length * 100 + 100);
+        }
+
+        // Función para mostrar el loader
+        function showLoader() {
+            const loader = document.getElementById('page-loader');
+            const mainContent = document.querySelector('.main-content');
+            
+            if (!loader) return;
+
+            loader.classList.remove('hide');
+            if (mainContent) {
+                mainContent.classList.remove('loaded');
+            }
+
+            animateLetters();
+        }
+
+        // Función para ocultar el loader
+        function hideLoader() {
+            const loader = document.getElementById('page-loader');
+            const mainContent = document.querySelector('.main-content');
+            
+            if (!loader) return;
+
+            loader.classList.add('hide');
+            if (mainContent) {
+                mainContent.classList.add('loaded');
+            }
+        }
+
+        // Inicializar el loader cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', () => {
+            showLoader();
+            setTimeout(hideLoader, 2000);
+        });
+
+        // Elimino el bloque que maneja la navegación entre páginas y restringe los clics a nav-link y logo-link
+
+        // Menú móvil
+        const menuToggle = document.querySelector('.menu-toggle');
+        const menu = document.querySelector('.menu');
+
+        menuToggle.addEventListener('click', () => {
+            menuToggle.classList.toggle('active');
+            menu.classList.toggle('active');
+        });
+
+        // Cerrar menú al hacer clic en un enlace
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                menuToggle.classList.remove('active');
+                menu.classList.remove('active');
+            });
+        });
+
+        // Cerrar menú al hacer clic fuera
+        document.addEventListener('click', (e) => {
+            if (!menu.contains(e.target) && !menuToggle.contains(e.target)) {
+                menuToggle.classList.remove('active');
+                menu.classList.remove('active');
+            }
+        });
+
+        // Efecto de header al hacer scroll
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Variables para el fondo
+        let currentBg = 0;
+        const backgroundImages = document.querySelectorAll('.background-slider img');
+        const bgInterval = 4000; // 4 segundos por imagen
+
+        // Función para cambiar el fondo
+        function changeBackground() {
+            // Remover clase activa
+            backgroundImages[currentBg].classList.remove('active');
+            
+            // Agregar clase exit al fondo actual
+            backgroundImages[currentBg].classList.add('exit');
+            
+            // Actualizar índice
+            currentBg = (currentBg + 1) % backgroundImages.length;
+            
+            // Agregar clase activa al nuevo fondo
+            backgroundImages[currentBg].classList.add('active');
+            
+            // Remover clase exit después de la transición
+            setTimeout(() => {
+                backgroundImages.forEach(img => img.classList.remove('exit'));
+            }, 3000);
+        }
+
+        // Iniciar el cambio de fondo
+        function startBackgroundSlider() {
+            setInterval(changeBackground, bgInterval);
+        }
+
+        // Iniciar cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', () => {
+            startBackgroundSlider();
+        });
+    </script>
+    <footer style="background: #000; color: #fff; text-align: center; padding: 18px 0; margin-top: 40px; border-top: 1px solid #ff69b4; font-size: 0.98em;">
+        <a href="aviso-legal.html" style="color:#ff69b4; text-decoration:underline; margin:0 10px;">Aviso Legal</a> |
+        <a href="privacidad.html" style="color:#ff69b4; text-decoration:underline; margin:0 10px;">Política de Privacidad</a> |
+        <a href="cookies.html" style="color:#ff69b4; text-decoration:underline; margin:0 10px;">Política de Cookies</a>
+        <div style="margin-top:6px; color:#eee; font-size:0.92em;">&copy; 2024 GYPSYTOCRAZY. Todos los derechos reservados.</div>
+    </footer>
+</body>
+</html>
+
+
