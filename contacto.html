@@ -987,21 +987,49 @@
 
         // Función para enviar email con EmailJS
         function sendEmail(formData) {
+            console.log('=== INICIO DE ENVÍO ===');
+            console.log('EmailJS disponible:', typeof emailjs !== 'undefined');
+            
             const templateParams = {
-                from_name: formData.name,
-                from_email: formData.email,
+                name: formData.name,
+                email: formData.email,
                 subject: formData.subject,
                 message: formData.message,
                 type: formData.type,
+                from_name: formData.name,
+                from_email: formData.email,
+                user_name: formData.name,
+                user_email: formData.email,
+                user_message: formData.message,
+                user_subject: formData.subject,
                 to_email: formData.type === 'cita' ? 'neworder@gypsytocrazy.com' : 'question@gypsytocrazy.com'
             };
 
-            // Usar template según el tipo de consulta
-            const templateId = formData.type === 'cita' ? 'template_citas' : 'template_consultas';
-            const serviceId = 'service_rnps1jf'; // Service ID configurado
+            const templateId = 'template_bypwxdl';
+            const serviceId = 'service_rnps1jf';
+            
+            console.log('Configuración:', {
+                serviceId: serviceId,
+                templateId: templateId,
+                templateParams: templateParams
+            });
 
-            // Enviar email usando EmailJS
-            return emailjs.send(serviceId, templateId, templateParams);
+            console.log('Llamando a emailjs.send...');
+            
+            return emailjs.send(serviceId, templateId, templateParams)
+                .then(function(response) {
+                    console.log('✅ Email enviado exitosamente:', response);
+                    return response;
+                })
+                .catch(function(error) {
+                    console.error('❌ Error al enviar email:', error);
+                    console.error('Detalles del error:', {
+                        status: error.status,
+                        text: error.text,
+                        message: error.message
+                    });
+                    throw error;
+                });
         }
 
         // Manejo del formulario con EmailJS
@@ -1017,6 +1045,13 @@
             submitButton.textContent = 'Enviando...';
             submitButton.disabled = true;
 
+            // Timeout de seguridad para rehabilitar el botón después de 10 segundos
+            const safetyTimeout = setTimeout(() => {
+                submitButton.textContent = 'Enviar Mensaje';
+                submitButton.disabled = false;
+                alert('El envío está tardando más de lo esperado. Por favor, inténtalo de nuevo.');
+            }, 10000);
+
             try {
                 const formData = {
                     name: document.getElementById('name').value,
@@ -1031,21 +1066,30 @@
                     throw new Error('EmailJS no está cargado correctamente');
                 }
 
+                console.log('Iniciando envío de email...');
                 await sendEmail(formData);
+                console.log('Email enviado exitosamente');
                 showThankYouPopup();
                 contactForm.reset();
             } catch (error) {
-                console.error('Error:', error);
+                console.error('Error completo:', error);
+                console.error('Tipo de error:', typeof error);
+                console.error('Mensaje de error:', error.message);
+                console.error('Status:', error.status);
+                console.error('Text:', error.text);
                 
                 // Mostrar mensaje de error más específico
                 if (error.message.includes('EmailJS no está cargado')) {
                     alert('Error: EmailJS no está configurado correctamente. Por favor, verifica la configuración.');
-                } else if (error.message.includes('service') || error.message.includes('template')) {
-                    alert('Error: Service ID o Template ID incorrectos. Por favor, verifica la configuración de EmailJS.');
+                } else if (error.status === 400) {
+                    alert('Error: Service ID o Template ID incorrectos. Verifica la configuración de EmailJS.');
+                } else if (error.status === 429) {
+                    alert('Error: Demasiados intentos. Espera un momento antes de intentar de nuevo.');
                 } else {
-                    alert('Lo sentimos, hubo un error al enviar el mensaje. Por favor, inténtalo de nuevo más tarde.');
+                    alert('Error al enviar el mensaje: ' + error.message);
                 }
             } finally {
+                clearTimeout(safetyTimeout); // Limpiar el timeout de seguridad
                 submitButton.textContent = 'Enviar Mensaje';
                 submitButton.disabled = false;
             }
